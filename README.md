@@ -41,3 +41,4 @@ Default cache value is 250. If you want longer animation, raise this value.
 
 Add a mesh, add rigidbody, check animated.
 
+<img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/set-obstacle.gif">
