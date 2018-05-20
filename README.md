@@ -22,3 +22,8 @@ You can test it by moving the head bone during animation playback. You must star
 Bones that you want to add rigidbody have a ristriction that the bones only have one child except for a head bone.
 
 <img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/ramified-bones.jpg">
+
+アーマチュアオブジェクトに移動・回転・拡縮が設定されている場合、正しく剛体メッシュを生成できないことがある。その場合は Ctrl + A で変更を適用してから剛体を生成する。  
+
+A translated, rotated, scaled armature object may produce wrong rigidbody mesh. Check a armature object before setup or apply the change with Ctrl + A.
+
