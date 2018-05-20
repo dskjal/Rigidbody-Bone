@@ -21,16 +21,16 @@ from mathutils import Vector, Matrix
 from math import radians
 
 bl_info = {
-    "name" : "Rigidbody Bone Setup Tool",             
-    "author" : "dskjal",                  
-    "version" : (0, 9),                  
-    "blender" : (2, 79, 0),              
-    "location" : "View3D > Toolshelf > Rigidbody Bone",   
-    "description" : "Setup bones to rigidbody.",   
+    "name" : "Rigidbody Bone Setup Tool",
+    "author" : "dskjal",
+    "version" : (0, 9),
+    "blender" : (2, 79, 0),
+    "location" : "View3D > Toolshelf > Rigidbody Bone",
+    "description" : "Setup bones to rigidbody.",
     "warning" : "",
-    "wiki_url" : "https://github.com/dskjal/Rigidbody-Bone",                    
-    "tracker_url" : "",                 
-    "category" : "Armature"                   
+    "wiki_url" : "https://github.com/dskjal/Rigidbody-Bone",
+    "tracker_url" : "",
+    "category" : "Armature"
 }
 
 def create_box(head, tail, x, z, box_radius):
@@ -86,6 +86,8 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
     
     x = to_world * bone.x_axis
     z = to_world * bone.z_axis
+    x.normalize()
+    z.normalize()
     
     o = create_box(Vector((0, 0, 0)), tail, x, z, box_radius)
 
@@ -212,7 +214,7 @@ class RigidbodyBoneSetupButton(bpy.types.Operator):
 
 class RigidbodyBoneSetupRemove(bpy.types.Operator):
     bl_idname = "dskjal.rigidbodyboneremove"
-    bl_label = "Remove Setted up Rigidbody"
+    bl_label = "Remove Rigidbody Bone"
 
     def execute(self, context):
         # remove IK
