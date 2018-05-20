@@ -12,7 +12,9 @@ Rigidbody meshes are parented to the last selected head bone.
 
 アニメーションを再生しながら頭に相当するボーンを動かすことで動作検証ができる。  
 
-You can test it by moving the head bone during animation playback.
+You can test it by moving the head bone during animation playback.  
+
+<img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-bone-how-to-use.gif">
 
 # 制限 Restriction
 頭に相当するボーンを除き、剛体を設定するボーンは子をひとつしか持てない制限がある。  
