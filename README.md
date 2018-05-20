@@ -28,3 +28,8 @@ Bones that you want to add rigidbody have a ristriction that the bones only have
 A translated, rotated, scaled armature object may produce wrong rigidbody mesh. Check a armature object before setup or apply the change with Ctrl + A.
 
 <img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/armature-transform.jpg">
+
+# Rigidbody Cache
+デフォルトのキャッシュ値は 250 になっている。これを超えるフレーム数のアニメーションが必要な場合は必要なフレーム数を超える値をキャッシュに指定する。  
+
+Default cache value is 250. If you want longer animation, raise this value.
