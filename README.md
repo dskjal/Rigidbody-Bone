@@ -7,7 +7,7 @@ Setup bones to rigidbody.
 剛体を設定したいボーンを選択し、***最後に頭に相当するボーンを選択する***。次に Setup Rigidbody ボタンを押す。
 最後に選択した頭に相当するボーンには剛体のメッシュが親子付けされる。  
 
-Select the bones that you want to add rigidbody. ***Select a head bone***. Push Setup Rigidbody. 
+Select the bones that you want to add rigidbody. ***Select a head bone LAST***. Push Setup Rigidbody. 
 Rigidbody meshes are parented to the last selected head bone.
 
 アニメーションを再生しながら頭に相当するボーンを動かすことで動作検証ができる。  
