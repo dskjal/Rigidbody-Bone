@@ -1,7 +1,7 @@
 # Rigidbody-Bone
-ボーンに剛体を設定する。  
+ボーンに剛体を設定する。スクリプトへのリンクは<a href="https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py">こちら</a>。  
 
-Setup rigidbody to bones.
+Setup rigidbody to bones. <a href="https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py">Direct link</a>.
 
 # 使い方 How to use
 剛体を設定したいボーンを選択し、***最後に頭に相当するボーンを選択する***。次に Setup Rigidbody ボタンを押す。
