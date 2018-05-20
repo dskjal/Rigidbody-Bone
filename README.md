@@ -1,7 +1,7 @@
 # Rigidbody-Bone
 ボーンに剛体を設定する。  
 
-Setup bones to rigidbody.
+Setup rigidbody to bones.
 
 # 使い方 How to use
 剛体を設定したいボーンを選択し、***最後に頭に相当するボーンを選択する***。次に Setup Rigidbody ボタンを押す。
