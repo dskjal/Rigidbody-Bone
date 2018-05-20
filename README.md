@@ -8,7 +8,7 @@ Setup bones to rigidbody.
 Select the bones that you want to add rigidbody. ***Select a head bone***. Push Setup Rigidbody. 
 Rigidbody meshes are parented to the last selected head bone.
 
-動作検証をするときはアニメーションを再生しながら頭に相当するボーンを動かす。
+アニメーションを再生しながら頭に相当するボーンを動かすことで動作検証ができる。
 You can test it by moving the head bone during animation playback.
 
 # 制限 Restriction
