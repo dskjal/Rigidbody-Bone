@@ -12,4 +12,4 @@ Rigidbody meshes are parented to the last selected head bone.
 頭に相当するボーンを除き、剛体を設定するボーンは子をひとつしか持てない制限がある。  
 Bones that you want to add rigidbody have a ristriction that the bones only have one child except for a head bone.
 
-![test]([https://github.com/dskjal/Rigidbody-Bone/blob/master/ramified-bones.jpg)
+<img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/ramified-bones.jpg">
