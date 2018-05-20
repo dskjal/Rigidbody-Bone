@@ -1,4 +1,4 @@
-# Rigidbody-Bone
+# Rigidbody Bone
 ボーンに剛体を設定する。スクリプトへのリンクは<a href="https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py">こちら</a>。  
 
 Setup rigidbody to bones. <a href="https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py">Direct link</a>.
