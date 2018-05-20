@@ -17,12 +17,13 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import bpy
-import mathutils
+from mathutils import Vector, Matrix
+from math import radians
 
 bl_info = {
     "name" : "Rigidbody Bone Setup Tool",             
     "author" : "dskjal",                  
-    "version" : (1,0),                  
+    "version" : (0, 9),                  
     "blender" : (2, 79, 0),              
     "location" : "View3D > Toolshelf > Rigidbody Bone",   
     "description" : "Setup bones to rigidbody.",   
@@ -65,26 +66,28 @@ def create_box(head, tail, x, z, box_radius):
 
 def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
     box_radius = bpy.context.scene.rigid_body_bone_box_radius
+    to_world = amt.matrix_world
+
     # create a box
     if bone_index == -1:
         # head box
         bone = hierarchy[bone_index + 1]
-        tail = box_radius * bone.y_axis
-        head = bone.head + tail
+        tail = box_radius * to_world * bone.y_axis
+        head = to_world * bone.head
     elif bone_index == len(hierarchy):
         # tip box
         bone = hierarchy[bone_index - 1]
-        head = bone.tail
-        tail = box_radius * bone.y_axis
+        head = to_world * bone.tail
+        tail = box_radius * to_world * bone.y_axis
     else:
         bone = hierarchy[bone_index]
-        head = bone.head
-        tail = bone.tail - bone.head
+        head = to_world * bone.head
+        tail = to_world * bone.tail - head
     
-    x = bone.x_axis
-    z = bone.z_axis
+    x = to_world * bone.x_axis
+    z = to_world * bone.z_axis
     
-    o = create_box(mathutils.Vector((0, 0, 0)), tail, x, z, box_radius)
+    o = create_box(Vector((0, 0, 0)), tail, x, z, box_radius)
 
     # set origin
     o.location = head
@@ -104,19 +107,12 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
     # rigidbody and ik settings
     if bone_index == -1:
         # parenting
-        bpy.ops.object.select_all(action='DESELECT')
-        bpy.context.scene.objects[o.name].select = True
-        bpy.context.scene.objects[amt.name].select = True
-        bpy.context.scene.objects.active = amt
-        bpy.ops.object.mode_set(mode='POSE')
-        bpy.ops.pose.select_all(action='DESELECT')
-        head_bone.bone.select = True
-        bpy.ops.object.parent_set(type='BONE')
-        
-        bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.context.scene.objects[amt.name].select = False
-        bpy.context.scene.objects.active = o
-        o.select = True
+        world_tail = to_world * head_bone.tail
+        mat = head_bone.matrix.copy()
+        o.location = (o.location - world_tail) * mat
+        o.parent = amt
+        o.parent_type = 'BONE'
+        o.parent_bone = head_bone.name
         
         # rigidbody settings
         o.rigid_body.kinematic = True
@@ -140,7 +136,7 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
         o.rigid_body_constraint.limit_lin_z_lower = 0
         o.rigid_body_constraint.limit_lin_z_upper = 0
         
-        # add a bone to ik
+        # add ik to a bone
         if bone_index > 0:
             ik_bone = hierarchy[bone_index-1]
             c = ik_bone.constraints.new('IK')
