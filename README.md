@@ -35,3 +35,9 @@ A translated, rotated, scaled armature object may produce wrong rigidbody mesh. 
 Default cache value is 250. If you want longer animation, raise this value.  
 
 <img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-cache.jpg">
+
+# 障害物の追加 Add obstacles
+メッシュに剛体を追加してアニメにチェックを入れる。  
+
+Add a mesh, add rigidbody, check animated.
+
