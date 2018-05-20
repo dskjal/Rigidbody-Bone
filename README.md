@@ -32,4 +32,6 @@ A translated, rotated, scaled armature object may produce wrong rigidbody mesh. 
 # Rigidbody Cache
 デフォルトのキャッシュ値は 250 になっている。これを超えるフレーム数のアニメーションが必要な場合は必要なフレーム数を超える値をキャッシュに指定する。  
 
-Default cache value is 250. If you want longer animation, raise this value.
+Default cache value is 250. If you want longer animation, raise this value.  
+
+<img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-cache.jpg">
