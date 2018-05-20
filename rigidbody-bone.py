@@ -32,8 +32,6 @@ bl_info = {
     "category" : "Armature"                   
 }
 
-#box_radius = 0.05
-
 def create_box(head, tail, x, z, box_radius):
     verts = []
     verts.extend([ head + x*box_radius + z*box_radius,
@@ -66,7 +64,7 @@ def create_box(head, tail, x, z, box_radius):
 
 
 def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
-    box_radius = bpy.context.scene.rigid_body_box_radius
+    box_radius = bpy.context.scene.rigid_body_bone_box_radius
     # create a box
     if bone_index == -1:
         # head box
@@ -126,8 +124,9 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
     else:
         o.rigid_body_constraint.type = 'GENERIC_SPRING'
         o.rigid_body_constraint.object2 = parent_box_object
-        o.rigid_body.linear_damping = 0.9
-        o.rigid_body.angular_damping = 0.9
+        o.rigid_body.linear_damping = bpy.context.scene.rigid_body_bone_linear_damping
+        o.rigid_body.angular_damping = bpy.context.scene.rigid_body_bone_angular_damping
+        o.rigid_body.mass = bpy.context.scene.rigid_body_bone_mass
         o.rigid_body_constraint.use_limit_lin_x = True
         o.rigid_body_constraint.use_limit_lin_y = True
         o.rigid_body_constraint.use_limit_lin_z = True
@@ -246,7 +245,11 @@ class RigidbodyBoneSetupUI(bpy.types.Panel):
     def draw(self, context):
         scn = context.scene
         self.layout.prop(scn, "rigid_body_bone_layer")
-        self.layout.prop(scn, "rigid_body_box_radius")
+        self.layout.prop(scn, "rigid_body_bone_box_radius")
+        self.layout.separator()
+        self.layout.prop(scn, "rigid_body_bone_mass")  
+        self.layout.prop(scn, "rigid_body_bone_linear_damping")  
+        self.layout.prop(scn, "rigid_body_bone_angular_damping")                
         self.layout.separator()
         self.layout.operator("dskjal.rigidbodybonesetup")
         self.layout.separator()
@@ -263,7 +266,10 @@ classes = (
 def register():
     # variables
     bpy.types.Scene.rigid_body_bone_layer = bpy.props.IntProperty(name="Rigidbody Layer", default=20, min=1, max=20)
-    bpy.types.Scene.rigid_body_box_radius = bpy.props.FloatProperty(name="Rigidbody box size", default=0.05, min=0.001)
+    bpy.types.Scene.rigid_body_bone_box_radius = bpy.props.FloatProperty(name="Rigidbody box size", default=0.05, min=0.001)
+    bpy.types.Scene.rigid_body_bone_mass = bpy.props.FloatProperty(name="Box mass", default=1, min=0.001)
+    bpy.types.Scene.rigid_body_bone_linear_damping = bpy.props.FloatProperty(name="Damping Translation", default=0.9, min=0.001, max=1.0)
+    bpy.types.Scene.rigid_body_bone_angular_damping = bpy.props.FloatProperty(name="Damping Rotation", default=0.9, min=0.001, max=1.0)
 
     for cls in classes:
         bpy.utils.register_class(cls)
@@ -273,7 +279,10 @@ def unregister():
         bpy.utils.unregister_class(cls)
 
     del bpy.types.Scene.rigid_body_bone_layer
-    del bpy.types.Scene.rigid_body_box_radius
+    del bpy.types.Scene.rigid_body_bone_box_radius
+    del bpy.types.Scene.rigid_body_bone_mass
+    del bpy.types.Scene.rigid_body_bone_linear_damping
+    del bpy.types.Scene.rigid_body_bone_angular_damping
 
 if __name__ == "__main__":
     register()
