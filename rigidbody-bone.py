@@ -289,9 +289,15 @@ class RigidbodyBoneSetupUI(bpy.types.Panel):
         col.operator("dskjal.rigidbodyboneremove")
 
         col.separator()
+        col.separator()
         col.label("Shortcuts:")
         col.operator("ptcache.free_bake_all", text="Free All Bakes")
         col.operator("screen.frame_jump", text="", icon='REW').end = False
+        col.label("Rigid Body Cache")
+        row = col.row(align=True)
+        row.prop(scn.rigidbody_world.point_cache, "frame_start")
+        row.prop(scn.rigidbody_world.point_cache, "frame_end")
+
 
 
 #---------------------------------------- Register ---------------------------------------------
