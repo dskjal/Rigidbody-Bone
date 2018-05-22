@@ -54,3 +54,10 @@ Free all bakes if rigidbody do not work well.
 Add a mesh, add rigidbody, check animated.
 
 <img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/set-obstacle.gif">
+
+# アニメーションのベイク Bake animation
+「ポーズ > アニメーション > アクションをベイク」でボーンアニメーションをベイクできる。その時にビジュアルキーイングにチェックを入れる必要がある。  
+
+<img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-bone-bake.png">  
+
+<img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-bone-visual-keying.png">
