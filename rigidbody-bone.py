@@ -23,7 +23,7 @@ from math import radians
 bl_info = {
     "name" : "Rigidbody Bone Setup Tool",
     "author" : "dskjal",
-    "version" : (0, 9),
+    "version" : (0, 91),
     "blender" : (2, 79, 0),
     "location" : "View3D > Toolshelf > Rigidbody Bone",
     "description" : "Setup bones to rigidbody.",
@@ -65,7 +65,8 @@ def create_box(head, tail, x, z, box_radius):
 
 
 def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
-    box_radius = bpy.context.scene.rigid_body_bone_box_radius
+    scn = bpy.context.scene
+    box_radius = scn.rigid_body_bone_box_radius
     to_world = amt.matrix_world
 
     # create a box
@@ -95,9 +96,9 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
     o.location = head
     
     # select the box
-    bpy.context.scene.objects[amt.name].select = False
-    bpy.context.scene.objects.active = o
-    bpy.context.scene.objects[o.name].select = True
+    scn.objects[amt.name].select = False
+    scn.objects.active = o
+    scn.objects[o.name].select = True
     bpy.ops.object.mode_set(mode='OBJECT')
     
     # rigidbody
@@ -122,9 +123,9 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
     else:
         o.rigid_body_constraint.type = 'GENERIC_SPRING'
         o.rigid_body_constraint.object2 = parent_box_object
-        o.rigid_body.linear_damping = bpy.context.scene.rigid_body_bone_linear_damping
-        o.rigid_body.angular_damping = bpy.context.scene.rigid_body_bone_angular_damping
-        o.rigid_body.mass = bpy.context.scene.rigid_body_bone_mass
+        o.rigid_body.linear_damping = scn.rigid_body_bone_linear_damping
+        o.rigid_body.angular_damping = scn.rigid_body_bone_angular_damping
+        o.rigid_body.mass = scn.rigid_body_bone_mass
         o.rigid_body_constraint.use_limit_lin_x = True
         o.rigid_body_constraint.use_limit_lin_y = True
         o.rigid_body_constraint.use_limit_lin_z = True
@@ -138,6 +139,17 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
         o.rigid_body_constraint.limit_lin_z_lower = 0
         o.rigid_body_constraint.limit_lin_z_upper = 0
         
+        #spring settings
+        o.rigid_body_constraint.use_spring_ang_x = scn.rigid_body_bone_use_x_angle
+        o.rigid_body_constraint.use_spring_ang_y = scn.rigid_body_bone_use_y_angle
+        o.rigid_body_constraint.use_spring_ang_z = scn.rigid_body_bone_use_z_angle
+        o.rigid_body_constraint.spring_stiffness_ang_x = scn.rigid_body_bone_x_stiffness
+        o.rigid_body_constraint.spring_stiffness_ang_y = scn.rigid_body_bone_y_stiffness
+        o.rigid_body_constraint.spring_stiffness_ang_z = scn.rigid_body_bone_z_stiffness
+        o.rigid_body_constraint.spring_damping_ang_x = scn.rigid_body_bone_x_damping
+        o.rigid_body_constraint.spring_damping_ang_y = scn.rigid_body_bone_y_damping
+        o.rigid_body_constraint.spring_damping_ang_z = scn.rigid_body_bone_z_damping
+
         # add ik to a bone
         if bone_index > 0:
             ik_bone = hierarchy[bone_index-1]
@@ -145,7 +157,8 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
             c.name = 'RigidBody_Bone_IK'
             c.target = o
             c.chain_count = 1
-    
+
+
     # deselect box
     bpy.context.scene.objects[o.name].select = False
     
@@ -242,16 +255,34 @@ class RigidbodyBoneSetupUI(bpy.types.Panel):
 
     def draw(self, context):
         scn = context.scene
-        self.layout.prop(scn, "rigid_body_bone_layer")
-        self.layout.prop(scn, "rigid_body_bone_box_radius")
-        self.layout.separator()
-        self.layout.prop(scn, "rigid_body_bone_mass")  
-        self.layout.prop(scn, "rigid_body_bone_linear_damping")  
-        self.layout.prop(scn, "rigid_body_bone_angular_damping")                
-        self.layout.separator()
-        self.layout.operator("dskjal.rigidbodybonesetup")
-        self.layout.separator()
-        self.layout.operator("dskjal.rigidbodyboneremove")
+        col = self.layout.column()
+        col.prop(scn, "rigid_body_bone_layer")
+        col.prop(scn, "rigid_body_bone_box_radius")
+        col.separator()
+        col.prop(scn, "rigid_body_bone_mass")  
+        col.prop(scn, "rigid_body_bone_linear_damping")  
+        col.prop(scn, "rigid_body_bone_angular_damping") 
+
+        # spring settings
+        col.separator()
+        row = col.row(align=True)
+        row.prop(scn, "rigid_body_bone_use_x_angle", toggle=True)
+        row.prop(scn, "rigid_body_bone_x_stiffness")
+        row.prop(scn, "rigid_body_bone_x_damping")
+        row = col.row(align=True)
+        row.prop(scn, "rigid_body_bone_use_y_angle", toggle=True)
+        row.prop(scn, "rigid_body_bone_y_stiffness")
+        row.prop(scn, "rigid_body_bone_y_damping")
+        row = col.row(align=True)
+        row.prop(scn, "rigid_body_bone_use_z_angle", toggle=True)
+        row.prop(scn, "rigid_body_bone_z_stiffness")
+        row.prop(scn, "rigid_body_bone_z_damping")
+
+
+        col.separator()
+        col.operator("dskjal.rigidbodybonesetup")
+        col.separator()
+        col.operator("dskjal.rigidbodyboneremove")
 
 
 #---------------------------------------- Register ---------------------------------------------
@@ -269,6 +300,17 @@ def register():
     bpy.types.Scene.rigid_body_bone_linear_damping = bpy.props.FloatProperty(name="Damping Translation", default=0.9, min=0.001, max=1.0)
     bpy.types.Scene.rigid_body_bone_angular_damping = bpy.props.FloatProperty(name="Damping Rotation", default=0.9, min=0.001, max=1.0)
 
+    # spring variables
+    bpy.types.Scene.rigid_body_bone_use_x_angle = bpy.props.BoolProperty(name="X Angle", default=False)
+    bpy.types.Scene.rigid_body_bone_use_y_angle = bpy.props.BoolProperty(name="Y Angle", default=False)
+    bpy.types.Scene.rigid_body_bone_use_z_angle = bpy.props.BoolProperty(name="Z Angle", default=False)
+    bpy.types.Scene.rigid_body_bone_x_stiffness = bpy.props.FloatProperty(name="Stiffness", default=10.0, min=0.001)
+    bpy.types.Scene.rigid_body_bone_y_stiffness = bpy.props.FloatProperty(name="Stiffness", default=10.0, min=0.001)
+    bpy.types.Scene.rigid_body_bone_z_stiffness = bpy.props.FloatProperty(name="Stiffness", default=10.0, min=0.001)
+    bpy.types.Scene.rigid_body_bone_x_damping = bpy.props.FloatProperty(name="Damping", default=0.9, min=0.001, max=1.0)
+    bpy.types.Scene.rigid_body_bone_y_damping = bpy.props.FloatProperty(name="Damping", default=0.9, min=0.001, max=1.0)
+    bpy.types.Scene.rigid_body_bone_z_damping = bpy.props.FloatProperty(name="Damping", default=0.9, min=0.001, max=1.0)
+
     for cls in classes:
         bpy.utils.register_class(cls)
 
@@ -281,6 +323,16 @@ def unregister():
     del bpy.types.Scene.rigid_body_bone_mass
     del bpy.types.Scene.rigid_body_bone_linear_damping
     del bpy.types.Scene.rigid_body_bone_angular_damping
+
+    del bpy.types.Scene.rigid_body_bone_use_x_angle
+    del bpy.types.Scene.rigid_body_bone_use_y_angle
+    del bpy.types.Scene.rigid_body_bone_use_z_angle
+    del bpy.types.Scene.rigid_body_bone_x_stiffness
+    del bpy.types.Scene.rigid_body_bone_y_stiffness
+    del bpy.types.Scene.rigid_body_bone_z_stiffness
+    del bpy.types.Scene.rigid_body_bone_x_damping
+    del bpy.types.Scene.rigid_body_bone_y_damping
+    del bpy.types.Scene.rigid_body_bone_z_damping
 
 if __name__ == "__main__":
     register()
