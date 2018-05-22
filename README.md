@@ -16,6 +16,12 @@ You can test it by moving the head bone during animation playback. ***You must s
 
 <img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-bone-how-to-use.gif">
 
+ばねをいい感じに設定すれば胸を揺らすのにも使える。  
+
+You can bounce breasts by setting spring well.
+
+<img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-bone-breast.gif">
+
 # 制限 Restriction
 頭に相当するボーンを除き、剛体を設定するボーンは子をひとつしか持てない制限がある。  
 
