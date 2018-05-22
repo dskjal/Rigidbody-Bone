@@ -257,6 +257,8 @@ class RigidbodyBoneSetupUI(bpy.types.Panel):
     def draw(self, context):
         scn = context.scene
         col = self.layout.column()
+        col.operator("dskjal.rigidbodyboneremove")
+        col.separator()
         col.label("Ribid Body Bone Settings:")
         col.prop(scn, "rigid_body_bone_layer")
         col.prop(scn, "rigid_body_bone_box_radius")
@@ -286,7 +288,7 @@ class RigidbodyBoneSetupUI(bpy.types.Panel):
         col.separator()
         col.operator("dskjal.rigidbodybonesetup")
         col.separator()
-        col.operator("dskjal.rigidbodyboneremove")
+
 
         col.separator()
         col.separator()
