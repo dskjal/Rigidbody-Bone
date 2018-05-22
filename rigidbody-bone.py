@@ -256,15 +256,18 @@ class RigidbodyBoneSetupUI(bpy.types.Panel):
     def draw(self, context):
         scn = context.scene
         col = self.layout.column()
+        col.label("Ribid Body Bone Settings:")
         col.prop(scn, "rigid_body_bone_layer")
         col.prop(scn, "rigid_body_bone_box_radius")
         col.separator()
+        col.label("Rigid Body Dynamics:")
         col.prop(scn, "rigid_body_bone_mass")  
         col.prop(scn, "rigid_body_bone_linear_damping")  
         col.prop(scn, "rigid_body_bone_angular_damping") 
 
         # spring settings
         col.separator()
+        col.label("Springs:")
         row = col.row(align=True)
         row.prop(scn, "rigid_body_bone_use_x_angle", toggle=True)
         row.prop(scn, "rigid_body_bone_x_stiffness")
