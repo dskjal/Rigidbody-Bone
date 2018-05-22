@@ -36,6 +36,10 @@ Default cache value is 250. If you want longer animation, raise this value.
 
 <img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-cache.jpg">
 
+動作がおかしいときはキャッシュを削除するとうまく動作することがある。  
+
+Free all bakes if rigidbody do not work well.
+
 # 障害物の追加 Add obstacles
 メッシュに剛体を追加してアニメにチェックを入れる。  
 
