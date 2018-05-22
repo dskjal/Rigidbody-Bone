@@ -103,7 +103,6 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
     
     # rigidbody
     bpy.ops.rigidbody.object_add()
-    o.rigid_body.collision_shape = 'CONVEX_HULL'
     bpy.ops.rigidbody.constraint_add()
     o.rigid_body_constraint.object1 = o
     
@@ -158,6 +157,8 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
             c.target = o
             c.chain_count = 1
 
+    # Place here for avoiding 'ERROR: no vertices to define Convex Hull collision shape with'
+    o.rigid_body.collision_shape = 'CONVEX_HULL'
 
     # deselect box
     bpy.context.scene.objects[o.name].select = False
@@ -286,6 +287,11 @@ class RigidbodyBoneSetupUI(bpy.types.Panel):
         col.operator("dskjal.rigidbodybonesetup")
         col.separator()
         col.operator("dskjal.rigidbodyboneremove")
+
+        col.separator()
+        col.label("Shortcuts")
+        col.operator("ptcache.free_bake_all", text="Free All Bakes")
+        col.operator("screen.frame_jump", text="", icon='REW').end = False
 
 
 #---------------------------------------- Register ---------------------------------------------
