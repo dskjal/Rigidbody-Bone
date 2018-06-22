@@ -1,7 +1,7 @@
 # Rigidbody Bone
-ボーンに剛体を設定する。スクリプトへのリンクは<a href="https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py">こちら</a>。  
+ボーンに剛体を設定する。サポートしている Blender のバージョンは 2.79 系列のみ。2.78 以前では動作しないと思われる。スクリプトへのリンクは<a href="https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py">こちら</a>。   
 
-Setup rigidbody to bones. <a href="https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py">Direct link</a>.
+Setup rigidbody to bones. Supported Blender version is only 2.79 series. <a href="https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py">Direct link</a>.
 
 # 使い方 How to use
 剛体を設定したいボーンを選択し、***最後に頭に相当するボーンを選択する***。次に Setup Rigidbody ボタンを押す。
