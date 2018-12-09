@@ -137,6 +137,8 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object):
         o.rigid_body_constraint.limit_lin_y_upper = 0
         o.rigid_body_constraint.limit_lin_z_lower = 0
         o.rigid_body_constraint.limit_lin_z_upper = 0
+        if hasattr(o.rigid_body_constraint, "spring_type"):
+            o.rigid_body_constraint.spring_type = 'SPRING1' # Blender 2.7
         
         #spring settings
         o.rigid_body_constraint.use_spring_ang_x = scn.rigid_body_bone_use_x_angle
