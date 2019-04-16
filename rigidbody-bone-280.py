@@ -303,10 +303,9 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
         # remove IK
         for amt in [o for o in bpy.data.objects if o.type == 'ARMATURE']:
             for b in amt.pose.bones:
-                for c in b.constraints:
-                    if 'RigidBody_Bone_' in c.name:
-                        b.constraints.remove(c)
-                        break
+                dels = [c for c in b.constraints if 'RigidBody_Bone_' in c.name]
+                for c in dels:
+                    b.constraints.remove(c)
 
         # remove objects
         c = get_rigidbody_collection(collection_name)
@@ -323,6 +322,13 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
 
         bpy.context.scene.collection.children.unlink(c)
         bpy.data.collections.remove(c)
+
+        # remove rigidbody world
+        old_mode = bpy.context.active_object.mode
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.rigidbody.world_remove()
+        bpy.ops.object.mode_set(mode=old_mode)
+        
         return {'FINISHED'}
 
 
@@ -415,10 +421,10 @@ def register():
     bpy.types.Scene.dskjal_rb_props = bpy.props.PointerProperty(type=DSKJAL_RB_Props)
 
 def unregister():
+    #if bpy.context.scene.get('dskjal_rb_props'): del bpy.context.scene.dskjal_rb_props
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
-    if bpy.context.scene.get('dskjal_rb_props'): del bpy.context.scene.dskjal_rb_props
 
 if __name__ == "__main__":
     register()
