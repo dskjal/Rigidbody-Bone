@@ -233,7 +233,7 @@ def get_rigidbody_collection(collection_name):
     bpy.context.scene.collection.children.link(collection)
     return collection
 
-#-------------------------------------------- UI ------------------------------------------
+#-------------------------------------------- UI ------------------------------------------        
 class DSKJAL_OT_free_rigidbody_cache(bpy.types.Operator):
     bl_idname = "dskjal.freerigidbodycache"
     bl_label = "Free Rigidbody Cache"
@@ -324,10 +324,11 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
         bpy.data.collections.remove(c)
 
         # remove rigidbody world
-        old_mode = bpy.context.active_object.mode
-        bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.ops.rigidbody.world_remove()
-        bpy.ops.object.mode_set(mode=old_mode)
+        if bpy.context.scene.rigidbody_world != None:
+            old_mode = bpy.context.active_object.mode
+            bpy.ops.object.mode_set(mode='OBJECT')
+            bpy.ops.rigidbody.world_remove()
+            bpy.ops.object.mode_set(mode=old_mode)
         
         return {'FINISHED'}
 
