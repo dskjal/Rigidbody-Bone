@@ -32,7 +32,7 @@ from bpy.props import (
 bl_info = {
     "name" : "Rigidbody Bone Setup Tool",
     "author" : "dskjal",
-    "version" : (0, 91),
+    "version" : (0, 92),
     "blender" : (2, 80, 0),
     "location" : "View3D > Toolshelf > Rigidbody Bone",
     "description" : "Setup bones to rigidbody.",
@@ -200,7 +200,7 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object, collecti
 
 # return a list of parent to child bone relashinship list
 # This function does not support ramified bones.
-# e.g. [ [parent, child1, child2], [parent2, child21, child22] ]
+# return [ [parent, child1, child2], [parent2, child21, child22], ... ]
 def analyze_bone_relationship(selected_bones, active_bone):
     bone_trees = []
     
@@ -234,33 +234,6 @@ def get_rigidbody_collection(collection_name):
     return collection
 
 #-------------------------------------------- UI ------------------------------------------        
-class DSKJAL_OT_free_rigidbody_cache(bpy.types.Operator):
-    bl_idname = "dskjal.freerigidbodycache"
-    bl_label = "Free Rigidbody Cache"
-
-    def execute(self, context):
-        if bpy.context.scene.rigidbody_world == None:
-            return {'FINISHED'}
-
-        o = bpy.context.active_object
-        old_mode = o.mode
-        bpy.ops.object.mode_set(mode='OBJECT')
-
-        rw = bpy.context.scene.rigidbody_world
-        col = rw.collection
-        const = rw.constraints
-
-        bpy.ops.rigidbody.world_remove()
-        bpy.ops.rigidbody.world_add()
-
-        rw = bpy.context.scene.rigidbody_world
-        rw.collection = col
-        rw.constraints = const
-        
-        bpy.ops.object.mode_set(mode=old_mode)
-
-        return {'FINISHED'}
-
 class DSKJAL_OT_RigidbodyBoneSetupButton(bpy.types.Operator):
     bl_idname = "dskjal.rigidbodybonesetup"
     bl_label = "Setup Rigidbody"
@@ -323,16 +296,6 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
         bpy.context.scene.collection.children.unlink(c)
         bpy.data.collections.remove(c)
 
-        # remove rigidbody world
-        if bpy.context.scene.rigidbody_world != None:
-            if bpy.context.active_object == None:
-                bpy.ops.rigidbody.world_remove()
-            else:
-                old_mode = bpy.context.active_object.mode
-                bpy.ops.object.mode_set(mode='OBJECT')
-                bpy.ops.rigidbody.world_remove()
-                bpy.ops.object.mode_set(mode=old_mode)
-        
         return {'FINISHED'}
 
 
@@ -380,7 +343,6 @@ class DSKJAL_PT_RigidbodyBoneSetupUI(bpy.types.Panel):
         col.separator()
         col.separator()
         col.label(text="Shortcuts:")
-        col.operator("dskjal.freerigidbodycache")
         col.operator("screen.frame_jump", text="", icon='REW').end = False
         col.label(text="Rigid Body Cache")
         row = col.row(align=True)
@@ -411,7 +373,6 @@ class DSKJAL_RB_Props(bpy.types.PropertyGroup):
     rigid_body_bone_z_damping : bpy.props.FloatProperty(name="Damping", default=0.9, min=0.001, max=1.0)
 
 classes = (
-    DSKJAL_OT_free_rigidbody_cache,
     DSKJAL_OT_RigidbodyBoneSetupButton,
     DSKJAL_OT_RigidbodyBoneSetupRemove,
     DSKJAL_PT_RigidbodyBoneSetupUI,
