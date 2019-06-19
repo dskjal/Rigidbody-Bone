@@ -325,10 +325,13 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
 
         # remove rigidbody world
         if bpy.context.scene.rigidbody_world != None:
-            old_mode = bpy.context.active_object.mode
-            bpy.ops.object.mode_set(mode='OBJECT')
-            bpy.ops.rigidbody.world_remove()
-            bpy.ops.object.mode_set(mode=old_mode)
+            if bpy.context.active_object == None:
+                bpy.ops.rigidbody.world_remove()
+            else:
+                old_mode = bpy.context.active_object.mode
+                bpy.ops.object.mode_set(mode='OBJECT')
+                bpy.ops.rigidbody.world_remove()
+                bpy.ops.object.mode_set(mode=old_mode)
         
         return {'FINISHED'}
 
