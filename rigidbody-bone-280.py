@@ -280,18 +280,35 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
                 for c in dels:
                     b.constraints.remove(c)
 
+        # remove rigidbody
+        active_object = bpy.context.active_object
+        old_mode = active_object.mode
+        bpy.ops.object.mode_set(mode='OBJECT')
+        active_object.select_set(False)
+
+        c = get_rigidbody_collection(collection_name)
+        for o in c.objects:
+            bpy.context.view_layer.objects.active = o
+            if o.rigid_body:
+                bpy.ops.rigidbody.object_remove()
+            elif o.rigid_body_constraint:
+                bpy.ops.rigidbody.constraint_remove()
+
+        bpy.context.view_layer.objects.active = active_object
+        bpy.ops.object.mode_set(mode=old_mode)
+        
         # remove objects
         c = get_rigidbody_collection(collection_name)
         for o in c.objects:
             c.objects.unlink(o)
-            if o.data == None:
-                # empty
-                bpy.data.objects.remove(o)
-            else:
+            if o.data:
                 # collision mesh
                 mesh = o.data
                 bpy.data.objects.remove(o)
                 bpy.data.meshes.remove(mesh)
+            else:
+                # empty
+                bpy.data.objects.remove(o)
 
         bpy.context.scene.collection.children.unlink(c)
         bpy.data.collections.remove(c)
