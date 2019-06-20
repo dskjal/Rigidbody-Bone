@@ -298,7 +298,6 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
         bpy.ops.object.mode_set(mode=old_mode)
         
         # remove objects
-        c = get_rigidbody_collection(collection_name)
         for o in c.objects:
             c.objects.unlink(o)
             if o.data:
