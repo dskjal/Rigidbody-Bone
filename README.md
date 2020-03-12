@@ -65,3 +65,6 @@ Add a mesh, add rigidbody, check animated.
 <img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-bone-bake.png">  
 
 <img src="https://github.com/dskjal/Rigidbody-Bone/blob/master/rigidbody-bone-visual-keying.png">
+
+# 類似のアドオン
+[rigid bodys generator（剛体ツール）](https://github.com/12funkeys/rigid_bodys_gen)
