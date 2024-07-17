@@ -1,4 +1,6 @@
 # Rigidbody Bone
+[For 4.2](https://github.com/dskjal/Rigidbody-Bone/releases/tag/release)
+
 [For 2.80](https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone-280.py)
 
 [For 2.79](https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py)
