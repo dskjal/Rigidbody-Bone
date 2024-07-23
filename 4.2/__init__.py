@@ -336,7 +336,7 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
 
 
 class DSKJAL_PT_RigidbodyBoneSetupUI(bpy.types.Panel):
-    bl_label = "Rigidbody Bone Setup Tool"
+    bl_label = "Rigidbody Bone"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Rigidbody Bone"       
@@ -346,51 +346,115 @@ class DSKJAL_PT_RigidbodyBoneSetupUI(bpy.types.Panel):
         col = self.layout.column()
         col.operator("dskjal.rigidbodyboneremove")
         col.separator()
-        col.label(text="Ribid Body Bone Settings:")
-        col.prop(scn, "rigid_body_bone_box_radius")
-        col.separator()
-        col.label(text="Rigid Body Dynamics:")
-        col.prop(scn, "rigid_body_bone_mass")  
-        col.prop(scn, "rigid_body_bone_linear_damping")  
-        col.prop(scn, "rigid_body_bone_angular_damping") 
 
-        # spring settings
-        col.separator()
-        col.label(text="Springs:")
-        row = col.row(align=True)
-        row.prop(scn, "rigid_body_bone_use_x_angle", toggle=True)
-        row.prop(scn, "rigid_body_bone_x_stiffness")
-        row.prop(scn, "rigid_body_bone_x_damping")
-        row = col.row(align=True)
-        row.prop(scn, "rigid_body_bone_use_y_angle", toggle=True)
-        row.prop(scn, "rigid_body_bone_y_stiffness")
-        row.prop(scn, "rigid_body_bone_y_damping")
-        row = col.row(align=True)
-        row.prop(scn, "rigid_body_bone_use_z_angle", toggle=True)
-        row.prop(scn, "rigid_body_bone_z_stiffness")
-        row.prop(scn, "rigid_body_bone_z_damping")
+        # gen settings
+        col.prop(scn, 'is_gen_settings_open', text='Generation Settings', icon='TRIA_DOWN' if scn.is_gen_settings_open else 'TRIA_RIGHT', emboss=False)
+        if scn.is_gen_settings_open:
+            col.prop(scn, "rigid_body_bone_box_radius")
+            col.separator()
+            col.label(text="Rigid Body Dynamics:")
+            col.prop(scn, "rigid_body_bone_mass")  
+            col.prop(scn, "rigid_body_bone_linear_damping")  
+            col.prop(scn, "rigid_body_bone_angular_damping") 
 
-        # collision collections
+            # spring settings
+            col.separator()
+            col.label(text="Springs:")
+            row = col.row(align=True)
+            row.prop(scn, "rigid_body_bone_use_x_angle", toggle=True)
+            row.prop(scn, "rigid_body_bone_x_stiffness")
+            row.prop(scn, "rigid_body_bone_x_damping")
+            row = col.row(align=True)
+            row.prop(scn, "rigid_body_bone_use_y_angle", toggle=True)
+            row.prop(scn, "rigid_body_bone_y_stiffness")
+            row.prop(scn, "rigid_body_bone_y_damping")
+            row = col.row(align=True)
+            row.prop(scn, "rigid_body_bone_use_z_angle", toggle=True)
+            row.prop(scn, "rigid_body_bone_z_stiffness")
+            row.prop(scn, "rigid_body_bone_z_damping")
+
+            # collision collections
+            col.separator()
+            col.label(text="Collision Collections:")
+            col = self.layout.column(align=True)
+            row = col.row(align=True)
+            for i in range(20):
+                row.prop(scn, "rigid_body_bone_collision_collections", index=i, text='', toggle=True)
+                if i == 4:
+                    row.separator()
+                elif i == 9:
+                    row = col.row(align=True)
+                elif i == 14:
+                    row.separator()
+
+            col = self.layout.column(align=True)
+            col.separator()
+            col.operator("dskjal.rigidbodybonesetup")
+
+        # bone rb settings
         col.separator()
-        col.label(text="Collision Collections:")
-        col = self.layout.column(align=True)
-        row = col.row(align=True)
-        for i in range(20):
-            row.prop(scn, "rigid_body_bone_collision_collections", index=i, text='', toggle=True)
-            if i == 4:
-                row.separator()
-            elif i == 9:
+        col.separator()
+        col.prop(scn, 'is_bone_rb_settings_open', text='Bone Settings', icon='TRIA_DOWN' if scn.is_bone_rb_settings_open else 'TRIA_RIGHT', emboss=False)
+        o = context.active_object
+        if scn.is_bone_rb_settings_open and o and o.type == 'ARMATURE' and o.mode == 'POSE':
+            if bpy.data.objects.find(f"{bpy.context.active_pose_bone.name}{suffix}") != -1:
+                col.use_property_split = True
+                bo = bpy.data.objects[f"{bpy.context.active_pose_bone.name}{suffix}"]
+                col.label(text="Rigid Body:")
+                col.prop(bo.rigid_body, "mass")
+                col.prop(bo.rigid_body, "linear_damping", text='Damping Tanslation')
+                col.prop(bo.rigid_body, "angular_damping", text='Damping Rotation')
+
+                col.label(text="Collision Collections:")
+                col = self.layout.column(align=True)
                 row = col.row(align=True)
-            elif i == 14:
-                row.separator()
+                for i in range(20):
+                    row.prop(bo.rigid_body, "collision_collections", index=i, text='', toggle=True)
+                    if i == 4:
+                        row.separator()
+                    elif i == 9:
+                        row = col.row(align=True)
+                    elif i == 14:
+                        row.separator()
+                col = self.layout.column(align=True)
 
 
-        col = self.layout.column(align=True)
+                def print_spring_settings(bone, is_parent):
+                    def get_spring_object(bone, is_parent):
+                        if is_parent:
+                            if bpy.data.objects.find(f"head-{bone.name}") != -1:
+                                return bpy.data.objects[f"head-{bone.name}"]
+                            if bpy.data.objects.find(f"{bone.parent.name}-{bone.name}") != -1:
+                                return bpy.data.objects[f"{bone.parent.name}-{bone.name}"]
+                        else:
+                            if bpy.data.objects.find(f"{bone.name}-tail") != -1:
+                                return bpy.data.objects[f"{bone.name}-tail"]
+                            if bpy.data.objects.find(f"{bone.name}-{bone.parent.name}") != -1:
+                                return bpy.data.objects[f"{bone.name}-{bone.parent.name}"]
+                        return None
+                    
+                    spring = get_spring_object(bone, is_parent=is_parent)
+                    if spring != None:
+                        col.label(text="Limits Angular:")
+                        col.use_property_split = True
+                        for prop in ["use_limit_ang_x", "limit_ang_x_lower", "limit_ang_x_upper", "use_limit_ang_y", "limit_ang_y_lower", "limit_ang_y_upper", "use_limit_ang_z", "limit_ang_z_lower", "limit_ang_z_upper"]:
+                            col.prop(spring.rigid_body_constraint, prop)
+
+                        col.label(text="Spring Angular:")
+                        col.use_property_split = True
+                        for prop in ["use_spring_ang_x", "spring_stiffness_ang_x", "spring_damping_ang_x", "use_spring_ang_y", "spring_stiffness_ang_y", "spring_damping_ang_y", "use_spring_ang_z", "spring_stiffness_ang_z", "spring_damping_ang_z"]:
+                            col.prop(spring.rigid_body_constraint, prop)
+
+                col.label(text="Spring Parent:")
+                print_spring_settings(bpy.context.active_pose_bone, is_parent=True)
+
+                col.label(text="Spring Child:")
+                print_spring_settings(bpy.context.active_pose_bone, is_parent=False)
+
+                col.use_property_split = False
+
+
         col.separator()
-        col.operator("dskjal.rigidbodybonesetup")
-        col.separator()
-
-
         col.separator()
         col.separator()
         col.label(text="Shortcuts:")
@@ -426,6 +490,10 @@ class DSKJAL_RB_Props(bpy.types.PropertyGroup):
     # collision collections
     rigid_body_bone_collision_collections : bpy.props.BoolVectorProperty(size=20, name="Collision Collection", default=(True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False,))
 
+    # ui
+    is_gen_settings_open : bpy.props.BoolProperty(name='is_gen_settings_open', default=True)
+    is_bone_rb_settings_open : bpy.props.BoolProperty(name='is_bone_rb_settings_open', default=True)
+
 classes = (
     DSKJAL_OT_RigidbodyBoneSetupButton,
     DSKJAL_OT_RigidbodyBoneSetupRemove,
@@ -440,7 +508,7 @@ def register():
     bpy.types.Scene.dskjal_rb_props = bpy.props.PointerProperty(type=DSKJAL_RB_Props)
 
 def unregister():
-    #if bpy.context.scene.get('dskjal_rb_props'): del bpy.context.scene.dskjal_rb_props
+    #if hasattr(bpy.context.scene, 'dskjal_rb_props'): del bpy.context.scene.dskjal_rb_props
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
