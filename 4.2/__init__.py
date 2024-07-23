@@ -43,8 +43,9 @@ bl_info = {
 }
 
 collection_name = 'rigidbody_bone'
+suffix = '_rigidbody_bone'
 
-def create_box(head, tail, x, z, box_radius):
+def create_box(head, tail, x, z, box_radius, name):
     verts = []
     verts.extend([ head + x*box_radius + z*box_radius,
                    head - x*box_radius + z*box_radius,
@@ -63,11 +64,11 @@ def create_box(head, tail, x, z, box_radius):
                    [3, 2, 6, 7],
                    [4, 7, 6, 5] ])
 
-    m = bpy.data.meshes.new('rigidbody_bone')
+    m = bpy.data.meshes.new(f'{name}')
     m.from_pydata(verts, [], faces)
     m.update(calc_edges=True)
     
-    o = bpy.data.objects.new('rigidbody_bone',object_data=m)
+    o = bpy.data.objects.new(f'{name}',object_data=m)
     
     return o
 
@@ -83,15 +84,18 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object, collecti
         bone = hierarchy[bone_index + 1]
         tail = box_radius * to_world @ bone.y_axis
         head = to_world @ bone.head
+        bone_name = f"head"
     elif bone_index == len(hierarchy):
         # tip box
         bone = hierarchy[bone_index - 1]
         head = to_world @ bone.tail
         tail = box_radius * to_world @ bone.y_axis
+        bone_name = f"tail"
     else:
         bone = hierarchy[bone_index]
         head = to_world @ bone.head
         tail = to_world @ bone.tail - head
+        bone_name = f"{bone.name}"
     
     x = to_world @ bone.x_axis
     z = to_world @ bone.z_axis
@@ -99,7 +103,7 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object, collecti
     z.normalize()
     
     # create a box
-    o = create_box(Vector((0, 0, 0)), tail, x, z, box_radius)
+    o = create_box(Vector((0, 0, 0)), tail, x, z, box_radius, f"{bone_name}{suffix}")
     collection.objects.link(o)
     o.location = head
 
@@ -113,8 +117,17 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object, collecti
     bpy.ops.rigidbody.object_add()
 
     if bone_index != -1:
+        if bone_index == 0:
+            # tail
+            spring_name = f'{hierarchy[0].parent.name}-{bone_name}'
+        elif bone_index == len(hierarchy):
+            # tail
+            spring_name = f'{hierarchy[bone_index-1].name}-tail'
+        else:
+            spring_name = f'{hierarchy[bone_index-1].name}-{bone_name}'
+
         # create a empty
-        e = bpy.data.objects.new("", object_data=None)
+        e = bpy.data.objects.new(spring_name, object_data=None)
         collection.objects.link(e)
         e.location = head
         e.empty_display_size = 0.1
@@ -276,7 +289,7 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
     bl_label = "Remove Rigidbody Bone"
 
     def execute(self, context):
-        # remove IK
+        # remove constraints
         for amt in [o for o in bpy.data.objects if o.type == 'ARMATURE']:
             for b in amt.pose.bones:
                 dels = [c for c in b.constraints if 'RigidBody_Bone_' in c.name]
