@@ -178,9 +178,9 @@ def setup_box(amt, head_bone, hierarchy, bone_index, parent_box_object, collecti
         # add copylocation and track to to a bone
         if bone_index > 0:
             ik_bone = hierarchy[bone_index-1]
-            c = ik_bone.constraints.new(type='COPY_LOCATION')
-            c.name = 'RigidBody_Bone_CL'
-            c.target = parent_box_object
+            # c = ik_bone.constraints.new(type='COPY_LOCATION')
+            # c.name = 'RigidBody_Bone_CL'
+            # c.target = parent_box_object
             
             c = ik_bone.constraints.new(type='DAMPED_TRACK')
             c.name = 'RigidBody_Bone_DT'
