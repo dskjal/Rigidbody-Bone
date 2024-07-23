@@ -292,10 +292,14 @@ class DSKJAL_OT_RigidbodyBoneSetupRemove(bpy.types.Operator):
         c = get_rigidbody_collection(collection_name)
         for o in c.objects:
             bpy.context.view_layer.objects.active = o
+            o.select_set(True)
+            bpy.context.view_layer.update()
             if o.rigid_body:
                 bpy.ops.rigidbody.object_remove()
             elif o.rigid_body_constraint:
                 bpy.ops.rigidbody.constraint_remove()
+
+            o.select_set(False)
 
         bpy.context.view_layer.objects.active = active_object
         bpy.ops.object.mode_set(mode=old_mode)
