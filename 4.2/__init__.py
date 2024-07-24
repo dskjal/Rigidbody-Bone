@@ -532,7 +532,7 @@ def register():
     bpy.types.Scene.dskjal_rb_props = bpy.props.PointerProperty(type=DSKJAL_RB_Props)
 
 def unregister():
-    #if hasattr(bpy.context.scene, 'dskjal_rb_props'): del bpy.context.scene.dskjal_rb_props
+    if hasattr(bpy.types.Scene, 'dskjal_rb_props'): del bpy.types.Scene.dskjal_rb_props
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
 
