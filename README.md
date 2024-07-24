@@ -91,3 +91,8 @@ You can bake animations at Pose &gt; Animation &gt Bake Action and must check vi
 
 # 類似のアドオン
 [rigid bodys generator（剛体ツール）](https://github.com/12funkeys/rigid_bodys_gen)
+
+# MMD モデルで Dependency Cycle Detected と表示される
+このエラーの原因は MMD Tools でインポートしたモデルには剛体が設定されているため。MMD Tools が作成した剛体メッシュとばねが設定されたエンプティとを削除するとこのエラーはなくなる。
+
+「物理シム > 弾性トラックでボーンへ情報をコピー > MMD Tools の剛体がチャイルドコンストレイントでボーンの情報をコピーしたあとで物理シム」というサイクルが発生している。ボーンのトランスフォームを確定するには Rigidbody Bone の物理シムが必要で、MMD Tools の物理シムを確定するにはボーンのトランスフォームが確定する必要がある。
