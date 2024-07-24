@@ -470,10 +470,18 @@ class DSKJAL_PT_RigidbodyBoneSetupUI(bpy.types.Panel):
                 col.use_property_split = False
 
 
+        # short cuts
         col.separator()
         col.separator()
         col.separator()
         col.label(text="Shortcuts:")
+        col.label(text="Gravity:")
+        row = col.row(align=True)
+        row.prop(bpy.context.scene, "use_gravity", text="Gravity", toggle=True)
+        row.prop(bpy.context.scene, "gravity", text="")
+
+        col.separator()
+        col.label(text="Jump to first frame:")
         col.operator("screen.frame_jump", text="", icon='REW').end = False
         col.label(text="Rigid Body Cache")
         row = col.row(align=True)

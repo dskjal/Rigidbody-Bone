@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "rigidbody_bone"
-version = "1.2.1"
+version = "1.2.2"
 name = "Rigidbody Bone"
 tagline = "ボーンに剛体を設定する"
 maintainer = "dskjal <email@address.com>"
