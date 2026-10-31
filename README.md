@@ -5,6 +5,9 @@
 
 [For 2.79](https://raw.githubusercontent.com/dskjal/Rigidbody-Bone/master/rigidbody-bone.py)
 
+If you want to simulate spring bones (secondary motion) in the viewport
+without playing the timeline, use [springbone](https://github.com/dskjal/springbone).
+
 # How to use
 Select the bones that you want to add rigidbody. ***Select a head bone LAST***. Push Setup Rigidbody. 
 Rigidbody meshes are parented to the last selected head bone.
